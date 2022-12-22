@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2022/12/22 19:38:08 by lbaumann         ###   ########.fr       */
+/*   Updated: 2022/12/22 19:48:53 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,17 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+/*
+-BUFFER_SIZE macro is safed in buffer_size variable so it can be modified
+-newline is included in buffer (except if BUFFER_SIZE is less than line length)
+-calloc is used for buffer allocation, in case allocated memory would have
+prev value in it -> would return in messed up output
+
+*/
 char	*get_next_line(int fd)
 {
 	char	*buffer;
 	size_t	buffer_size;
-	char	temp;
 	int		i;
 
 	if (fd == -1)
@@ -38,6 +44,7 @@ char	*get_next_line(int fd)
 		i++;
 		buffer_size--;
 	}
+	
 	
 
 

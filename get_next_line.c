@@ -6,13 +6,12 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2022/12/27 18:30:04 by lbaumann         ###   ########.fr       */
+/*   Updated: 2022/12/29 09:35:58 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
-
 #include <fcntl.h>
 
 /*
@@ -20,31 +19,37 @@
 -newline is included in buffer (except if BUFFER_SIZE is less than line length)
 -calloc is used for buffer allocation, in case allocated memory would have
 prev value in it -> would return in messed up output
--read fails if nbyte exceeds INT_MAX
--read Return values: number of bytes read, end of file: 0, in case of error: -1
+
 */
 char	*get_next_line(int fd)
 {
-	static char	buffer[BUFFER_SIZE];
-	size_t		buffer_size;
-	int			i;
-	ssize_t		read_ret;
+	char	*buffer;
+	size_t	buffer_size;
+	int		i;
 
 	if (fd == -1)
 		return (NULL);
 	buffer_size = BUFFER_SIZE;
 	i = 0;
+	printf("%li\n", buffer_size);
 	while (buffer_size)
 	{
-		read_ret = read(fd, &buffer[i], 1);
-		if (read_ret == -1 || read_ret == 0)
-			return (NULL);
+		// printf("loop\n");
+		read(fd, &buffer[i], 1);
 		if (buffer[i] == '\n')
 			break;
 		i++;
 		buffer_size--;
 	}
-	return (buffer);
+	
+	
+
+
+	printf("%s", buffer);
+	
+	
+	
+	return(0);
 }
 
 int	main(void)
@@ -60,12 +65,5 @@ int	main(void)
 	res = get_next_line(fd);
 	printf("%s", res);
 	//printf("\n%p", res);
-	
-	// while((res = get_next_line(fd)))
-	// 	printf("%s", res);
-	
-	
 
-
-	//system("leaks a.out");
 }

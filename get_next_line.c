@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2022/12/25 13:11:53 by lbaumann         ###   ########.fr       */
+/*   Updated: 2022/12/27 18:30:04 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -25,17 +25,14 @@ prev value in it -> would return in messed up output
 */
 char	*get_next_line(int fd)
 {
-	char		*buffer;
+	static char	buffer[BUFFER_SIZE];
 	size_t		buffer_size;
-	static int	i;
+	int			i;
 	ssize_t		read_ret;
 
 	if (fd == -1)
 		return (NULL);
 	buffer_size = BUFFER_SIZE;
-	buffer = calloc(sizeof(char), buffer_size);
-	if (buffer == NULL)
-		return (NULL);
 	i = 0;
 	while (buffer_size)
 	{
@@ -59,10 +56,10 @@ int	main(void)
 
 	res = get_next_line(fd);
 	printf("%s", res);
-	printf("\n%p", res);
+	//printf("\n%p", res);
 	res = get_next_line(fd);
 	printf("%s", res);
-	printf("\n%p", res);
+	//printf("\n%p", res);
 	
 	// while((res = get_next_line(fd)))
 	// 	printf("%s", res);

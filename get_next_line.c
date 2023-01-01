@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2022/12/29 23:59:46 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/01 22:11:19 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,41 +26,37 @@ the next get_next_line call can return NULL
 char	*get_next_line(int fd)
 {
 	char	*buffer;
-	size_t	buffer_size;
 	int		i;
-	static ssize_t	read_ret = 1;
+	ssize_t	read_ret;
 
-	if (fd < 0)
+	if (fd < 0 || BUFFER_SIZE < 1)
 		return (NULL);
-	if (read_ret == 0)
-		return (NULL);
-	buffer_size = BUFFER_SIZE;
-	buffer = ft_calloc(buffer_size, sizeof(char));
+	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
 	if (!buffer)
 		return (NULL);
 	i = 0;
-	while (buffer_size)
+	while (i < BUFFER_SIZE)
 	{
 		read_ret = read(fd, &buffer[i], 1);
-		if (read_ret == -1)
+		if (read_ret == -1 || (read_ret == 0 && i == 0))
+		{
+			free(buffer);
 			return (NULL);
+		}
 		if (buffer[i] == '\n' || read_ret == 0)
 			break;
 		i++;
-		buffer_size--;
 	}
 	return(buffer);
 }
 
-int	main(void)
+/* int	main(void)
 {
-	int	fd = open("text.txt", O_RDONLY);
-	char	*res;
+	// int	fd = open("text.txt", O_RDONLY);
+	// char	*res;
 
-	res = get_next_line(fd);
-	printf("%s", res);
-	res = get_next_line(fd);
-	printf("%s", res);
+	// printf("%s", get_next_line(fd));
+	// printf("%s", get_next_line(fd));
 	// res = get_next_line(1);
 	// printf("%s", res);
-}
+} */

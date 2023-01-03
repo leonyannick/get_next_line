@@ -6,13 +6,73 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/01 22:11:19 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/03 18:37:51 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "get_next_line.h"
 #include <stdio.h>
 #include <fcntl.h>
+
+static void	*gnl_free(char *mem)
+{
+	free (mem);
+	return (NULL);
+}
+
+static char	*gnl_save(char **stash)
+{
+	int		i;
+	char	*temp;
+	char	*line;
+	size_t	stash_len;
+	
+	stash_len = ft_strlen(*stash);
+	i = 0;
+	line = malloc((stash_len + 1) * sizeof(char));
+	if (line == NULL)
+		return (NULL);
+	temp = malloc((stash_len + 1) * sizeof(char));
+	if (temp == NULL)
+		return (NULL);
+	while ((*stash)[i] != '\n' && (*stash)[i])
+	{
+		line[i] = (*stash)[i];
+		i++;
+	}
+	if ((*stash)[i] == '\n')
+	{
+		line[i] = '\n';
+		i++;
+	}
+	temp = ft_strjoin(temp, &(*stash)[i]);
+	free(*stash);
+	*stash = ft_strjoin(*stash, temp);
+	free(temp);
+	return (line);
+}
+
+static char	*gnl_parse(int fd, char **stash, char *buffer)
+{
+	ssize_t	read_ret;
+	char	*line_ret;
+
+	read_ret = read(fd, buffer, BUFFER_SIZE);
+	if (read_ret == 0 && **stash == 0)
+		return (gnl_free(buffer));
+	*stash = ft_strjoin(*stash, buffer);
+	while (!ft_strchr(buffer, '\n') && read_ret == BUFFER_SIZE)
+	{
+		ft_memset(buffer, 0, BUFFER_SIZE);
+		read_ret = read(fd, buffer, BUFFER_SIZE);
+		if (read_ret == -1)
+			return (gnl_free(buffer));
+		*stash = ft_strjoin(*stash, buffer);
+	}
+	free(buffer);
+	line_ret = gnl_save(stash);
+	return (line_ret);
+}
 
 /*
 -BUFFER_SIZE macro is safed in buffer_size variable so it can be modified
@@ -25,38 +85,54 @@ the next get_next_line call can return NULL
 */
 char	*get_next_line(int fd)
 {
-	char	*buffer;
-	int		i;
-	ssize_t	read_ret;
+	char		*buffer;
+	static char	*stash = "";
+	char	*res;
 
-	if (fd < 0 || BUFFER_SIZE < 1)
-		return (NULL);
-	buffer = ft_calloc(BUFFER_SIZE + 1, sizeof(char));
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
-	i = 0;
-	while (i < BUFFER_SIZE)
-	{
-		read_ret = read(fd, &buffer[i], 1);
-		if (read_ret == -1 || (read_ret == 0 && i == 0))
-		{
-			free(buffer);
-			return (NULL);
-		}
-		if (buffer[i] == '\n' || read_ret == 0)
-			break;
-		i++;
-	}
-	return(buffer);
+	buffer[BUFFER_SIZE] = 0;
+	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) == -1)
+		return (gnl_free(buffer));
+	
+	res = gnl_parse(fd, &stash, buffer);
+	return (res);
 }
+
+void	test2(char *test)
+{
+	test = ft_strjoin(test, "sdf");
+}
+
+void	test(void)
+{
+	/* static char *test = "";
+
+	
+	printf("[%s]", test);
+	
+	
+	test2(&test);
+
+	printf("%s", test);
+	free(test); */
+
+}
+
 
 /* int	main(void)
 {
-	// int	fd = open("text.txt", O_RDONLY);
-	// char	*res;
+	int	fd = open("text.txt", O_RDONLY);
+	char *temp;
 
-	// printf("%s", get_next_line(fd));
-	// printf("%s", get_next_line(fd));
-	// res = get_next_line(1);
-	// printf("%s", res);
+	
+	while ((temp = get_next_line(fd)))
+		printf("%s", temp);
+
+	//system("leaks --list a.out");
+
+	
+	
 } */
+

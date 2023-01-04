@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/03 18:37:51 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/04 23:01:53 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,6 @@ static char	*gnl_save(char **stash)
 static char	*gnl_parse(int fd, char **stash, char *buffer)
 {
 	ssize_t	read_ret;
-	char	*line_ret;
 
 	read_ret = read(fd, buffer, BUFFER_SIZE);
 	if (read_ret == 0 && **stash == 0)
@@ -65,13 +64,10 @@ static char	*gnl_parse(int fd, char **stash, char *buffer)
 	{
 		ft_memset(buffer, 0, BUFFER_SIZE);
 		read_ret = read(fd, buffer, BUFFER_SIZE);
-		if (read_ret == -1)
-			return (gnl_free(buffer));
 		*stash = ft_strjoin(*stash, buffer);
 	}
 	free(buffer);
-	line_ret = gnl_save(stash);
-	return (line_ret);
+	return (gnl_save(stash));
 }
 
 /*
@@ -87,7 +83,6 @@ char	*get_next_line(int fd)
 {
 	char		*buffer;
 	static char	*stash = "";
-	char	*res;
 
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
@@ -96,8 +91,7 @@ char	*get_next_line(int fd)
 	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) == -1)
 		return (gnl_free(buffer));
 	
-	res = gnl_parse(fd, &stash, buffer);
-	return (res);
+	return (gnl_parse(fd, &stash, buffer));
 }
 
 void	test2(char *test)
@@ -121,18 +115,14 @@ void	test(void)
 }
 
 
-/* int	main(void)
+int	main(void)
 {
-	int	fd = open("text.txt", O_RDONLY);
+	int	fd = open("tests/cons_nl.txt", O_RDONLY);
 	char *temp;
 
 	
 	while ((temp = get_next_line(fd)))
 		printf("%s", temp);
-
-	//system("leaks --list a.out");
-
-	
-	
-} */
+	free(temp);
+}
 

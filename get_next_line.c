@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/09 10:00:40 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/09 15:27:30 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,33 +28,11 @@ static char	*gnl_save(char **stash)
 	size_t	stash_len_remain;
 
 	stash_len_remain = ft_strlen(ft_strchr(*stash, '\n')) - 1;
-	line_len = ft_strlen(*stash) - ft_strlen(ft_strchr(*stash, '\n')) + 1;
-	
+	line_len = ft_strlen(*stash) - stash_len_remain;
 	line = ft_substr(*stash, 0, line_len);
 	temp = *stash;
 	*stash = ft_substr(*stash, line_len, stash_len_remain);
 	free(temp);
-	/* i = 0;
-	line = malloc((line_len + 1) * sizeof(char));
-	if (line == NULL)
-		return (NULL);
-	stash_remain = malloc((stash_len_remain + 1) * sizeof(char));
-	if (stash_remain == NULL)
-		return (NULL);
-	while ((*stash)[i] != '\n' && (*stash)[i])
-	{
-		line[i] = (*stash)[i];
-		i++;
-	}
-	if ((*stash)[i] == '\n')
-	{
-		line[i] = '\n';
-		i++;
-	}
-	stash_remain = ft_strjoin(stash_remain, &(*stash)[i]);
-	free(*stash);
-	*stash = ft_strjoin(*stash, stash_remain);
-	free(stash_remain); */
 	return (line);
 }
 
@@ -64,7 +42,7 @@ static char	*gnl_parse(int fd, char **stash, char *buffer)
 	char	*temp;
 
 	read_ret = read(fd, buffer, BUFFER_SIZE);
-	if (read_ret == 0)
+	if (read_ret == 0 && !ft_strlen(*stash))
 	{
 		free(*stash);
 		return (gnl_free(buffer));
@@ -109,38 +87,15 @@ char	*get_next_line(int fd)
 	buffer[BUFFER_SIZE] = 0;
 	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) == -1)
 		return (gnl_free(buffer));
-	
 	return (gnl_parse(fd, &stash, buffer));
 }
 
-void	test2(char *test)
+/* int	main(int argc, char **argv)
 {
-	test = ft_strjoin(test, "sdf");
-}
-
-void	test(void)
-{
-	/* static char *test = "";
-
-	
-	printf("[%s]", test);
-	
-	
-	test2(&test);
-
-	printf("%s", test);
-	free(test); */
-
-	char *test = malloc(7);
-
-	printf("%lu", sizeof(test));
-
-}
-
-
-/* int	main(void)
-{
-	int	fd = open("tests/elephant_ascii.txt", O_RDONLY);
+	//printf("%s", argv[1]);
+	if (argc < 2)
+		return (1);
+	int	fd = open(argv[1], O_RDONLY);
 	char *temp;
 
 	
@@ -150,6 +105,5 @@ void	test(void)
 		free(temp);
 	}
 
-	system("leaks a.out");
+	//system("leaks a.out");
 } */
-

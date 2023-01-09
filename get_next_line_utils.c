@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:46:45 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/06 23:11:17 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/09 10:10:55 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ size_t	ft_strlen(const char *s)
 {
 	size_t	length;
 
+	if (s == 0)
+		return (0);
 	length = 0;
 	while (*s != 0)
 	{

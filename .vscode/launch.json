@@ -8,7 +8,7 @@
 	"name":"Launch",
 	"type":"cppdbg",
 	"program":"${workspaceFolder}/a.out",
-	"args":[],
+	"args":["files/11_with_nl.txt"],
 	"cwd":"${workspaceFolder}",
 	"request":"launch",
 	"MIMode":"lldb"

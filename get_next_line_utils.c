@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:46:45 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/03 09:25:14 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/06 23:11:17 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,19 +24,6 @@ void	*ft_memset(void *s, int c, size_t n)
 		n--;
 	}
 	return ((char *) s);
-}
-
-void	*ft_calloc(size_t nmemb, size_t size)
-{
-	void	*addr;
-
-	if (nmemb * size > SIZE_T_MAX)
-		return (0);
-	addr = malloc(nmemb * size);
-	if (addr == 0)
-		return (0);
-	ft_memset(addr, 0, (nmemb * size));
-	return (addr);
 }
 
 size_t	ft_strlen(const char *s)
@@ -124,56 +111,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 }
 
 /*
-	-size = full size of buffer
-	-src and dst have to be NULL terminated
-	-appends src at end of dst
-	-appends at most size - strlen(dst) - 1 bytes
-	-returns: initial length of dst + length of src
-	-if traversed size characters without finding NULL, no NULL termination
-*/
-size_t	ft_strlcat(char *dst, const char *src, size_t size)
-{
-	size_t	dst_len;
-	size_t	src_len;
-
-	dst_len = ft_strlen(dst);
-	src_len = ft_strlen(src);
-	if (size <= dst_len)
-		return (size + src_len);
-	while (*dst != 0)
-	{
-		dst++;
-		size--;
-	}
-	while ((size - 1) > 0 && *src != 0)
-	{
-		*dst = *src;
-		dst++;
-		src++;
-		size--;
-	}
-	*dst = 0;
-	return (dst_len + src_len);
-}
-
-char	*ft_strcat(char *dest, char *src)
-{
-	char	*start;
-
-	start = dest;
-	while (*dest)
-		dest++;
-	while (*src)
-	{
-		*dest = *src;
-		dest++;
-		src++;
-	}
-	*dest = 0;
-	return (start);
-}
-
-/*
 	DESC: returns pointer to new string (duplicate of s)
 	RETURN:	pointer
 			NULL if insufficient memory
@@ -198,3 +135,36 @@ char	*ft_strdup(const char *s)
 	return (dup);
 }
 
+/*
+	RETURN:
+		The substring.
+		NULL if the allocation fails.
+	DESC:
+		Allocates (with malloc(3)) and returns a substring
+		from the string ’s’.
+		The substring begins at index ’start’ and is of
+		maximum size ’len’.
+	PARAMS:
+		s:  The string from which to create the substring.
+		start:  The start index of the substring in the
+		string ’s’.
+		len:  The maximum length of the substring.
+*/
+char	*ft_substr(char const *s, unsigned int start, size_t len)
+{
+	char	*sub;
+	size_t	s_len;
+
+	if (s == 0)
+		return (0);
+	s_len = ft_strlen(s);
+	if (start >= s_len || len == 0)
+		return (ft_strdup(""));
+	if (start + len > s_len)
+		len = s_len - start;
+	sub = malloc(len + 1);
+	if (sub == 0)
+		return (0);
+	ft_strlcpy(sub, s + start, len + 1);
+	return (sub);
+}

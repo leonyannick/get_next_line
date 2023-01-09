@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/04 23:35:16 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/09 10:00:40 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,13 +20,21 @@ static void	*gnl_free(char *mem)
 	return (NULL);
 }
 
-static char	*gnl_save(char **stash, size_t line_len, size_t stash_len_remain)
+static char	*gnl_save(char **stash)
 {
-	int		i;
-	char	*stash_remain;
 	char	*line;
+	char	*temp;
+	size_t	line_len;
+	size_t	stash_len_remain;
+
+	stash_len_remain = ft_strlen(ft_strchr(*stash, '\n')) - 1;
+	line_len = ft_strlen(*stash) - ft_strlen(ft_strchr(*stash, '\n')) + 1;
 	
-	i = 0;
+	line = ft_substr(*stash, 0, line_len);
+	temp = *stash;
+	*stash = ft_substr(*stash, line_len, stash_len_remain);
+	free(temp);
+	/* i = 0;
 	line = malloc((line_len + 1) * sizeof(char));
 	if (line == NULL)
 		return (NULL);
@@ -46,30 +54,39 @@ static char	*gnl_save(char **stash, size_t line_len, size_t stash_len_remain)
 	stash_remain = ft_strjoin(stash_remain, &(*stash)[i]);
 	free(*stash);
 	*stash = ft_strjoin(*stash, stash_remain);
-	free(stash_remain);
+	free(stash_remain); */
 	return (line);
 }
 
 static char	*gnl_parse(int fd, char **stash, char *buffer)
 {
 	ssize_t	read_ret;
-	size_t	line_len;
-	size_t	stash_len_remain;
+	char	*temp;
 
 	read_ret = read(fd, buffer, BUFFER_SIZE);
-	if (read_ret == 0 && **stash == 0)
+	if (read_ret == 0)
+	{
+		free(*stash);
 		return (gnl_free(buffer));
-	*stash = ft_strjoin(*stash, buffer);
+	}
+	if (!*stash)
+		*stash = ft_substr(buffer, 0, BUFFER_SIZE);
+	else
+	{
+		temp = *stash;
+		*stash = ft_strjoin(*stash, buffer);
+		free(temp);
+	}
 	while (!ft_strchr(buffer, '\n') && read_ret == BUFFER_SIZE)
 	{
 		ft_memset(buffer, 0, BUFFER_SIZE);
 		read_ret = read(fd, buffer, BUFFER_SIZE);
+		temp = *stash;
 		*stash = ft_strjoin(*stash, buffer);
+		free(temp);
 	}
 	free(buffer);
-	stash_len_remain = ft_strlen(ft_strchr(*stash, '\n')) - 1;
-	line_len = ft_strlen(*stash) - ft_strlen(ft_strchr(*stash, '\n')) + 1;
-	return (gnl_save(stash, line_len, stash_len_remain));
+	return (gnl_save(stash));
 }
 
 /*
@@ -84,7 +101,7 @@ the next get_next_line call can return NULL
 char	*get_next_line(int fd)
 {
 	char		*buffer;
-	static char	*stash = "";
+	static char	*stash;
 
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
@@ -121,16 +138,18 @@ void	test(void)
 }
 
 
-int	main(void)
+/* int	main(void)
 {
-	int	fd = open("text.txt", O_RDONLY);
+	int	fd = open("tests/elephant_ascii.txt", O_RDONLY);
 	char *temp;
 
 	
 	while ((temp = get_next_line(fd)))
+	{
 		printf("%s", temp);
-	free(temp);
+		free(temp);
+	}
 
 	system("leaks a.out");
-}
+} */
 

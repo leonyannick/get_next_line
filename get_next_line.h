@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:56 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/03 09:25:25 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/06 23:11:26 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -30,6 +30,8 @@ size_t	ft_strlcpy(char *dst, const char *src, size_t size);
 char	*ft_strjoin(char const *s1, char const *s2);
 size_t	ft_strlcat(char *dst, const char *src, size_t size);
 char	*ft_strcat(char *dest, char *src);
+char	*ft_strdup(const char *s);
+char	*ft_substr(char const *s, unsigned int start, size_t len);
 char	*ft_strdup(const char *s);
 
 #endif

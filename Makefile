@@ -6,7 +6,7 @@
 #    By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2022/12/22 17:39:15 by lbaumann          #+#    #+#              #
-#    Updated: 2023/01/04 22:56:57 by lbaumann         ###   ########.fr        #
+#    Updated: 2023/01/06 23:34:41 by lbaumann         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -16,7 +16,7 @@ CC = cc
 CFLAGS = -Wall -Werror -Wextra -c -D BUFFER_SIZE=$(BUFFER_SZ)
 CFLAGS_2 = -Wall -Werror -Wextra
 
-BUFFER_SZ = 10
+BUFFER_SZ = 20
 
 SRCS = get_next_line.c get_next_line_utils.c
 

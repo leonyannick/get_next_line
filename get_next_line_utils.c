@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:46:45 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/09 10:10:55 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/09 18:57:08 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,78 +63,32 @@ char	*ft_strchr(const char *s, int c)
 	return (0);
 }
 
-/*
-	DESCRIPTION: copies up to size - 1 characters to dest
-			null terminate result as long as at size > 0
-	USAGE: null should be included in size, src must be null terminated
-	RETURN: length of string trying to create (length of src)
-*/
-size_t	ft_strlcpy(char *dst, const char *src, size_t size)
-{
-	size_t	src_len;
-
-	src_len = ft_strlen(src);
-	if (size == 0)
-		return (src_len);
-	while (0 < (size - 1) && *src != 0)
-	{
-		*dst = *src;
-		dst++;
-		src++;
-		size--;
-	}
-	*dst = 0;
-	return (src_len);
-}
-
 char	*ft_strjoin(char const *s1, char const *s2)
 {
-	int		len1;
-	int		len2;
 	char	*ret;
-	char	*ret_start;
+	int		i;
+	int		k;
 
 	if (s1 == 0 || s2 == 0)
 		return (0);
-	len1 = ft_strlen(s1);
-	len2 = ft_strlen(s2);
-	ret = malloc(len1 + len2 + 1);
+	ret = malloc(ft_strlen(s1) + ft_strlen(s2) + 1);
 	if (ret == 0)
 		return (0);
-	ret_start = ret;
-	while (*s1 != 0)
-	{
-		*ret = *s1;
-		ret++;
-		s1++;
-	}
-	ft_strlcpy(ret, s2, len2 + 1);
-	return (ret_start);
-}
-
-/*
-	DESC: returns pointer to new string (duplicate of s)
-	RETURN:	pointer
-			NULL if insufficient memory
-*/
-char	*ft_strdup(const char *s)
-{
-	int		len;
-	char	*dup;
-	int		i;
-
-	len = ft_strlen(s);
-	dup = malloc(len + 1);
-	if (dup == 0)
-		return (0);
 	i = 0;
-	while (s[i] != 0)
+	while (s1[i])
 	{
-		dup[i] = s[i];
+		ret[i] = s1[i];
 		i++;
 	}
-	dup[len] = 0;
-	return (dup);
+	k = 0;
+	while (s2[k])
+	{
+		ret[i] = s2[k];
+		i++;
+		k++;
+	}
+	ret[i] = 0;
+	return (ret);
 }
 
 /*
@@ -156,17 +110,24 @@ char	*ft_substr(char const *s, unsigned int start, size_t len)
 {
 	char	*sub;
 	size_t	s_len;
+	size_t	i;
 
 	if (s == 0)
 		return (0);
 	s_len = ft_strlen(s);
-	if (start >= s_len || len == 0)
-		return (ft_strdup(""));
-	if (start + len > s_len)
+	i = 0;
+	if (start >= s_len)
+		len = 0;
+	else if (start + len > s_len)
 		len = s_len - start;
 	sub = malloc(len + 1);
 	if (sub == 0)
 		return (0);
-	ft_strlcpy(sub, s + start, len + 1);
+	while (i < len && s[start + i])
+	{
+		sub[i] = s[start + i];
+		i++;
+	}
+	sub[i] = 0;
 	return (sub);
 }

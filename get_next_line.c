@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/09 15:27:30 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/09 18:03:01 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,16 @@ static void	*gnl_free(char *mem)
 {
 	free (mem);
 	return (NULL);
+}
+
+static char	*gnl_join(char **stash, char *buffer)
+{
+	char	*temp;
+
+	temp = *stash;
+	*stash = ft_strjoin(*stash, buffer);
+	free(temp);
+	return (*stash);
 }
 
 static char	*gnl_save(char **stash)
@@ -39,7 +49,6 @@ static char	*gnl_save(char **stash)
 static char	*gnl_parse(int fd, char **stash, char *buffer)
 {
 	ssize_t	read_ret;
-	char	*temp;
 
 	read_ret = read(fd, buffer, BUFFER_SIZE);
 	if (read_ret == 0 && !ft_strlen(*stash))
@@ -50,18 +59,12 @@ static char	*gnl_parse(int fd, char **stash, char *buffer)
 	if (!*stash)
 		*stash = ft_substr(buffer, 0, BUFFER_SIZE);
 	else
-	{
-		temp = *stash;
-		*stash = ft_strjoin(*stash, buffer);
-		free(temp);
-	}
+		*stash = gnl_join(stash, buffer);
 	while (!ft_strchr(buffer, '\n') && read_ret == BUFFER_SIZE)
 	{
 		ft_memset(buffer, 0, BUFFER_SIZE);
 		read_ret = read(fd, buffer, BUFFER_SIZE);
-		temp = *stash;
-		*stash = ft_strjoin(*stash, buffer);
-		free(temp);
+		*stash = gnl_join(stash, buffer);
 	}
 	free(buffer);
 	return (gnl_save(stash));

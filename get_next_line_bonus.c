@@ -1,16 +1,16 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   get_next_line.c                                    :+:      :+:    :+:   */
+/*   get_next_line_bonus.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: lbaumann <lbaumann@student.42berlin.de>    +#+  +:+       +#+        */
+/*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/09 18:03:01 by lbaumann         ###   ########.fr       */
+/*   Created: 2023/01/12 16:47:27 by lbaumann          #+#    #+#             */
+/*   Updated: 2023/01/12 17:06:15 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "get_next_line.h"
+#include "get_next_line_bonus.h"
 
 static void	*gnl_free(char **stash, char *buffer, char *line);
 static char	*gnl_join(char **stash, char *buffer);
@@ -28,15 +28,15 @@ are freed
 char	*get_next_line(int fd)
 {
 	char		*buffer;
-	static char	*stash;
+	static char	*stash[1024];
 
 	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
 	if (!buffer)
 		return (NULL);
 	ft_memset(buffer, 0, BUFFER_SIZE + 1);
-	if (fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) == -1)
-		return (gnl_free(&stash, buffer, NULL));
-	return (gnl_parse(fd, &stash, buffer));
+	if (fd > 1023 || fd < 0 || BUFFER_SIZE < 1 || read(fd, buffer, 0) == -1)
+		return (gnl_free(&stash[fd], buffer, NULL));
+	return (gnl_parse(fd, &stash[fd], buffer));
 }
 
 /*
@@ -47,7 +47,6 @@ new line is found
 PARAMETERS: -stash: adress of stash, so that malloced strs can be saved
 RETURN: -NULL in case end of file is reached or str allocation fails
 -returns return from save function
-
 */
 static char	*gnl_parse(int fd, char **stash, char *buffer)
 {

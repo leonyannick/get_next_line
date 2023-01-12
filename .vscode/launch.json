@@ -8,10 +8,10 @@
 	"name":"Launch",
 	"type":"cppdbg",
 	"program":"${workspaceFolder}/a.out",
-	"args":["files/some_txt.txt"],
+	"args":["files/10_with_nl.txt"],
 	"cwd":"${workspaceFolder}",
 	"request":"launch",
-	"MIMode":"lldb"
+	"MIMode":"gdb"
 	}
 	]
 }

@@ -6,7 +6,7 @@
 /*   By: lbaumann <lbaumann@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2022/12/22 17:35:24 by lbaumann          #+#    #+#             */
-/*   Updated: 2023/01/12 17:43:42 by lbaumann         ###   ########.fr       */
+/*   Updated: 2023/01/12 17:44:46 by lbaumann         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,7 +16,6 @@ static void	*gnl_free(char **stash, char *buffer, char *line);
 static char	*gnl_join(char **stash, char *buffer);
 static char	*gnl_save(char **stash);
 static char	*gnl_parse(int fd, char **stash, char *buffer);
-sdfsdf
 
 /*
 DESCRIPTION: returns a line from a file descriptor (fd)
